@@ -20,3 +20,10 @@ $("#date-up").on("click", function() {
 let savedEvents = JSON.parse(localStorage.getItem("scheduled")) || {};
 let currentDateTime = moment(TODAY);
 
+updateDate();
+
+function updateDate() {
+    $("#currentDay").text(currentDateTime.format("dddd Do MMMM YYYY"));
+    createTimeBlocks();
+}
+
