@@ -68,7 +68,8 @@ function createTimeBlocks() {
 }
 
 function save() {
-    let timeID = $(this).attr("data-datetime");
+    let target = $(this);
+    let timeID = target.attr("data-datetime");
     let eventText = $(`textarea[data-datetime=${timeID}]`).val().trim();
     if (eventText) {
         savedEvents[timeID] = eventText;
@@ -76,10 +77,11 @@ function save() {
         delete savedEvents[timeID];
     }
     localStorage.setItem("scheduled", JSON.stringify(savedEvents));
-    const icon = $(this).children();
+    const icon = target.children();
     icon.addClass("fa-spinner fa-spin").removeClass("fa-save");
     setTimeout(function() {
         icon.addClass("fa-save").removeClass("fa-spin fa-spinner")
+        target.removeClass("changed");
         showPopup();
     }, 800);
 }
