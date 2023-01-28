@@ -94,7 +94,6 @@ function showPopup(delay = 1500) {
 function stateChange() {
     let timeID = $(this).attr("data-datetime");
     let eventButton = $(`.saveBtn[data-datetime=${timeID}]`);
-    console.log(eventButton);
     eventButton.addClass("changed")
 }
 
