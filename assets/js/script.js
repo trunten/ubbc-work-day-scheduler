@@ -43,9 +43,29 @@ function createTimeBlocks() {
         let textInput = $(`<textarea data-datetime="${timeID}" class="col-8 col-lg-10"></textarea>`);
         let button = $(`<button data-datetime="${timeID}" class="col-2 col-lg-1 saveBtn "><i class="fas fa-save"></i></button>`);
 
+        // Set text input colour
+        if (savedEvents[timeID]) {
+            textInput.val(savedEvents[timeID]);
+        }
+        if (currentDateTime < TODAY) {
+            textInput.addClass("past");
+        } else if (currentDateTime > TODAY) {
+            textInput.addClass("future");
+        } else {
+            if (i < currentDateTime.hour()) {
+                textInput.addClass("past");
+            } else if (i > currentDateTime.hour()) {
+                textInput.addClass("future");
+            } else {
+                textInput.addClass("present");
+            }
+        }
+
         // Add elements to container
         timeBlock.append(hourText).append(textInput).append(textInput).append(button);
         timeBlock.appendTo(timeBlockContainer);
     }
 }
+
+
 
