@@ -30,11 +30,14 @@ function updateDate() {
 function createTimeBlocks() {
     $(".row").remove();
     for (let i = HOUR_START; i <= HOUR_END; i++) {
+        // Set hour to current loop index
         let hour = moment(currentDateTime).set({
             hour: i,
             minute: 0,
             second: 0,
         });
+
+        // Unique dataset value for buttons and textareas
         let timeID = hour.unix();
 
         // Create elements
