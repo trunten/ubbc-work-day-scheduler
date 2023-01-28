@@ -85,6 +85,11 @@ textarea {
   background-color: #049abc;
 }
 
+.saveBtn.changed {
+  background-color: #ffc107;
+}
+
+
 .popup {
   padding: 10px;
   width: 280px;
