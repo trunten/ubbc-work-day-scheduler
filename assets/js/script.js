@@ -27,3 +27,25 @@ function updateDate() {
     createTimeBlocks();
 }
 
+function createTimeBlocks() {
+    $(".row").remove();
+    for (let i = HOUR_START; i <= HOUR_END; i++) {
+        let hour = moment(currentDateTime).set({
+            hour: i,
+            minute: 0,
+            second: 0,
+        });
+        let timeID = hour.unix();
+
+        // Create elements
+        let timeBlock  = $(`<div class="time-block row"></div>`);
+        let hourText = $(`<div class="col-2 col-lg-1 hour"><h3 class="align-middle text-right pt-3">${hour.format("hA")}</h3></div>`);
+        let textInput = $(`<textarea data-datetime="${timeID}" class="col-8 col-lg-10"></textarea>`);
+        let button = $(`<button data-datetime="${timeID}" class="col-2 col-lg-1 saveBtn "><i class="fas fa-save"></i></button>`);
+
+        // Add elements to container
+        timeBlock.append(hourText).append(textInput).append(textInput).append(button);
+        timeBlock.appendTo(timeBlockContainer);
+    }
+}
+
