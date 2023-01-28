@@ -89,7 +89,6 @@ textarea {
   background-color: #ffc107;
 }
 
-
 .popup {
   padding: 10px;
   width: 280px;
@@ -111,12 +110,20 @@ textarea {
   transition: opacity 0.5s ease-in;
 }
 
-@media screen and (max-width:400px) {
+#currentDay {
+  width: 350px;
+}
+
+@media screen and (max-width:414px) {
   h1 {
     font-size: 2em !important;
     font-weight: bold !important;
   }
   p {
     font-size: 1em !important;
+  }
+  #currentDay {
+    font-size: 0.8em !important;
+    width: 150px;
   }
 }
