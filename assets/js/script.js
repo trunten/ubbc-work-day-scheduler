@@ -80,9 +80,12 @@ function save() {
     icon.addClass("fa-spinner fa-spin").removeClass("fa-save");
     setTimeout(function() {
         icon.addClass("fa-save").removeClass("fa-spin fa-spinner")
-       
+        showPopup();
     }, 800);
 }
 
-
+function showPopup(delay = 1500) {
+    $('.popup').css({opacity: "1"})
+    setTimeout(() => $('.popup').css({opacity: "0"}), delay);
+}
 
