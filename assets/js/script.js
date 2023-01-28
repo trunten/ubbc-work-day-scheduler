@@ -6,11 +6,11 @@ const timeBlockContainer = $(".container");
 
 // event listeners
 timeBlockContainer.on("click", ".saveBtn", save);
+timeBlockContainer.on('input', "textarea", stateChange);
 $("#date-down").on("click", function() {
     currentDateTime.subtract(1, 'days');
     updateDate();
 });
-
 $("#date-up").on("click", function() {
     currentDateTime.add(1, 'days');
     updateDate();
@@ -87,5 +87,9 @@ function save() {
 function showPopup(delay = 1500) {
     $('.popup').css({opacity: "1"})
     setTimeout(() => $('.popup').css({opacity: "0"}), delay);
+}
+
+function stateChange() {
+    console.log(this);
 }
 
