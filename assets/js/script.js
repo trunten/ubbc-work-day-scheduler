@@ -1,5 +1,5 @@
-const HOUR_START = 0;
-const HOUR_END = 23;
+const HOUR_START = 9;
+const HOUR_END = 21;
 const timeBlockContainer = $(".container");
 
 // event listeners
