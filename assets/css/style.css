@@ -67,18 +67,23 @@ textarea {
   border-radius: 0;
   border-top-right-radius: 15px;
   border-bottom-right-radius: 15px;
+  font-size: 20px; 
+}
+
+.saveBtn:enabled {
   background-color: #06aed5;
   color: white;
-  font-size: 20px; 
 }
 
 .saveBtn i {
   transition: all 0.4s ease-in-out;
 }
 
-.saveBtn:hover i {
-  scale: 1.3;
-  color: black;
+@media (hover:hover) {
+  .saveBtn:hover:enabled i {
+    scale: 1.3;
+    color: black;
+  }
 }
 
 .saveBtn:active {

@@ -51,7 +51,8 @@ function createTimeBlocks() {
         let timeBlock  = $(`<div class="time-block row"></div>`);
         let hourText = $(`<div class="col-2 col-lg-1 hour"><h3 class="align-middle text-right pt-3">${hour.format("hA")}</h3></div>`);
         let textInput = $(`<textarea data-datetime="${timeID}" class="col-8 col-lg-10"></textarea>`);
-        let button = $(`<button data-datetime="${timeID}" class="col-2 col-lg-1 saveBtn "><i class="fas fa-save"></i></button>`);
+        let button = $(`<button data-datetime="${timeID}" class="col-2 col-lg-1 saveBtn"><i class="fas fa-save"></i></button>`);
+        // button.prop("disabled", true);
 
         // Set text input value if it's in local storage
         if (savedEvents[timeID]) {
@@ -112,6 +113,7 @@ function save() {
     setTimeout(function() {
         icon.addClass("fa-save").removeClass("fa-spin fa-spinner")
         target.removeClass("changed");
+        // target.prop("disabled", true);
         showPopup();
     }, 800);
 }
@@ -124,6 +126,7 @@ function showPopup(delay = 1500) {
 function stateChange() {
     let timeID = $(this).attr("data-datetime");
     let eventButton = $(`.saveBtn[data-datetime=${timeID}]`);
+    // eventButton.prop("disabled", false);
     eventButton.addClass("changed")
 }
 
