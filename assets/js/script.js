@@ -1,24 +1,33 @@
+// Global constants & variables
 const HOUR_START = 9;
 const HOUR_END = 21;
 const timeBlockContainer = $(".container");
+let timer;
+let savedEvents;
+let currentDate;
 
-// event listeners
-timeBlockContainer.on("click", ".saveBtn", save);
-timeBlockContainer.on('input', "textarea", stateChange);
-$("#date-down").on("click", function() {
-    currentDate.subtract(1, 'days');
+init();
+
+function init() {
+    // event listeners
+    timeBlockContainer.on("click", ".saveBtn", save);
+    timeBlockContainer.on('input', "textarea", stateChange);
+    $("#date-down").on("click", function() {
+        currentDate.subtract(1, 'days');
+        updateDate();
+    });
+    $("#date-up").on("click", function() {
+        currentDate.add(1, 'days');
+        updateDate();
+    });
+
+    // Get saved events from local storage and set initial state
+    savedEvents = JSON.parse(localStorage.getItem("scheduled")) || {};
+    currentDate = moment().set({hour: 0, minute: 0, second: 0});
+
+    // Set the date text and create timeblocks
     updateDate();
-});
-$("#date-up").on("click", function() {
-    currentDate.add(1, 'days');
-    updateDate();
-});
-
-// Initial state
-let savedEvents = JSON.parse(localStorage.getItem("scheduled")) || {};
-let currentDate = moment().set({hour: 0, minute: 0, second: 0});
-
-updateDate();
+}
 
 function updateDate() {
     $("#currentDay").text(currentDate.format("dddd Do MMMM YYYY"));
@@ -72,12 +81,19 @@ function updateBlockColours() {
         }
     })
 
-    // Run at again on the next hour to update colours as the day advances.
-    let next = moment();
-    next.set({hour: next.hour() + 1, minute: 0, second: 3}); // Set seconds to 3 because timer seemed to drift and run early on ocassion
-    console.log(next);
-    next = (next.unix() - moment().unix()) * 1000; //seconds to milliseconds
-    setTimeout(updateBlockColours, next);
+    // If a timer is not set
+    if (!timer) {
+        // Run at again on the next hour to update colours as the day advances.
+        let next = moment();
+        next.set({hour: next.hour() + 1, minute: 0, second: 3}); // Set seconds to 3 because timer seemed to drift and run early on ocassion
+        console.log(next);
+        next = (next.unix() - moment().unix()) * 1000; // Time to next hour (seconds to milliseconds)
+        timer = setTimeout(function() {
+            timer = false; // Set timer to false becuase it's ran at this point
+            updateBlockColours();
+        }, next);
+    }
+    
 }
 
 function save() {
