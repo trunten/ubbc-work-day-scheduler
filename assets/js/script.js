@@ -74,7 +74,8 @@ function updateBlockColours() {
 
     // Run at again on the next hour to update colours as the day advances.
     let next = moment();
-    next.set({hour: next.hour() + 1, minute: 0, second: 0});
+    next.set({hour: next.hour() + 1, minute: 0, second: 3}); // Set seconds to 3 because timer seemed to drift and run early on ocassion
+    console.log(next);
     next = (next.unix() - moment().unix()) * 1000; //seconds to milliseconds
     setTimeout(updateBlockColours, next);
 }
