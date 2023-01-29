@@ -20,6 +20,11 @@ function init() {
         currentDate.add(1, 'days');
         updateDate();
     });
+    $("#today").on("click", function(e) {
+        e.preventDefault();
+        currentDate = moment().set({hour: 0, minute: 0, second: 0});
+        updateDate();
+    })
 
     // Get saved events from local storage and set initial state
     savedEvents = JSON.parse(localStorage.getItem("scheduled")) || {};
@@ -31,6 +36,11 @@ function init() {
 
 function updateDate() {
     $("#currentDay").text(currentDate.format("dddd Do MMMM YYYY"));
+    if (currentDate.unix() == moment().set({hour: 0, minute: 0, second: 0}).unix()) {
+        $("#today").addClass("invisible");
+    } else {
+        $("#today").removeClass("invisible");
+    }
     createTimeBlocks();
 }
 

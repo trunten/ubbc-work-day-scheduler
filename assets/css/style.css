@@ -61,6 +61,10 @@ textarea {
   color: white;
 }
 
+.invisible {
+  visibility: hidden;
+}
+
 .saveBtn {
   border: none;
   border-left: 1px solid black;
@@ -122,6 +126,17 @@ textarea {
 
 #currentDay {
   padding-top: 15px;
+}
+
+#today {
+  grid-column: span 3;
+  text-decoration: none;
+}
+
+@media (hover:hover) {
+  #today:hover {
+    color: red;
+  }
 }
 
 @media screen and (max-width:414px) {
