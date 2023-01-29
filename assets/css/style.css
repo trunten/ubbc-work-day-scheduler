@@ -147,7 +147,7 @@ textarea {
 
 #settings-btn {
   position: absolute;
-  top: -1px;
+  top: 0;
   right: 1%;
   transition: all 0.3s ease-in-out;
   border-top-left-radius: 0;
