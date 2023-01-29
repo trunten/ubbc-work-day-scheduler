@@ -108,8 +108,15 @@ textarea {
   transition: opacity 0.5s ease-in;
 }
 
+#date-nav {
+  display: grid;
+  grid-template-columns: auto minmax(auto, 350px) auto;
+  align-items: center;
+  justify-content: center;
+}
+
 #currentDay {
-  width: 350px;
+  padding-top: 15px;
 }
 
 @media screen and (max-width:414px) {
@@ -119,9 +126,5 @@ textarea {
   }
   p {
     font-size: 1em !important;
-  }
-  #currentDay {
-    font-size: 0.8em !important;
-    width: 150px;
   }
 }
