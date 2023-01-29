@@ -1,4 +1,4 @@
-const HOUR_START = 9;
+const HOUR_START = 0;
 const HOUR_END = 23;
 const ONE_HOUR = 3600000;
 const TODAY = moment();
@@ -80,6 +80,7 @@ function save() {
         delete savedEvents[timeID];
     }
     localStorage.setItem("scheduled", JSON.stringify(savedEvents));
+    if (!target.hasClass("changed")) { return; }
     const icon = target.children();
     icon.addClass("fa-spinner fa-spin").removeClass("fa-save");
     setTimeout(function() {
