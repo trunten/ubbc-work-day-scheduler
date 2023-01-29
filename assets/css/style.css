@@ -139,6 +139,32 @@ textarea {
   }
 }
 
+.settings {
+  position: relative;
+  min-width: 350px;
+  max-width: 350px;
+}
+
+#settings-btn {
+  position: absolute;
+  top: 0%;
+  right: 1%;
+  transition: all 0.3s ease-in-out;
+}
+
+#close-modal {
+  color: rgb(255, 68, 68);
+  position: absolute;
+  top: 5%;
+  right: 5%;
+}
+
+@media (hover:hover) {
+  #settings-btn:hover {
+    scale: 1.3;
+  }
+}
+
 @media screen and (max-width:414px) {
   h1 {
     font-size: 2em !important;

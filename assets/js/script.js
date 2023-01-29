@@ -1,7 +1,6 @@
 // Global constants & variables
-const HOUR_START = 9;
-const HOUR_END = 21;
 const timeBlockContainer = $(".container");
+let settings;
 let timer;
 let savedEvents;
 let currentDate;
@@ -12,6 +11,9 @@ function init() {
     // event listeners
     timeBlockContainer.on("click", ".saveBtn", save);
     timeBlockContainer.on('input', "textarea", stateChange);
+    $("#settings-btn").on("click", showModal);
+    $("#close-modal").on("click", closeModal);
+    $("#save-settings").on("click", saveSettings);
     $("#date-down").on("click", function() {
         currentDate.subtract(1, 'days');
         updateDate();
@@ -25,6 +27,21 @@ function init() {
         currentDate = moment().set({hour: 0, minute: 0, second: 0});
         updateDate();
     })
+
+    // Get settings from local storage and set form values
+    settings = JSON.parse(localStorage.getItem("settings")) || { format: 12, start: 9, end: 17 };
+    for (let i = 0; i < 24; i++) {
+        let t = ("0" + i).slice(-2) + ":00";
+        $("#start").append($(`<option value="${i}">${t}</option>`));
+        $("#end").append($(`<option value="${i}">${t}</option>`));
+    }
+    if (settings.format === 12) {
+        $("#12").prop("checked", true);
+    } else {
+        $("#24").prop("checked", true);
+    }
+    $("#start").val(settings.start);
+    $("#end").val(settings.end);
 
     // Get saved events from local storage and set initial state
     savedEvents = JSON.parse(localStorage.getItem("scheduled")) || {};
@@ -46,7 +63,7 @@ function updateDate() {
 
 function createTimeBlocks() {
     $(".row").remove();
-    for (let i = HOUR_START; i <= HOUR_END; i++) {
+    for (let i = settings.start; i <= settings.end; i++) {
         // Set hour to current loop index
         let hour = moment(currentDate).set({
             hour: i,
@@ -58,8 +75,9 @@ function createTimeBlocks() {
         let timeID = hour.unix();
 
         // Create elements
+        let label = settings.format === 12 ? hour.format("hA") : hour.format("HH:mm");
         let timeBlock  = $(`<div class="time-block row"></div>`);
-        let hourText = $(`<div class="col-2 col-lg-1 hour"><h3 class="align-middle text-right pt-3">${hour.format("hA")}</h3></div>`);
+        let hourText = $(`<div class="col-2 col-lg-1 hour"><h3 class="align-middle text-right pt-3">${label}</h3></div>`);
         let textInput = $(`<textarea data-datetime="${timeID}" class="col-8 col-lg-10"></textarea>`);
         let button = $(`<button data-datetime="${timeID}" class="col-2 col-lg-1 saveBtn"><i class="fas fa-save"></i></button>`);
         // button.prop("disabled", true);
@@ -138,5 +156,32 @@ function stateChange() {
     let eventButton = $(`.saveBtn[data-datetime=${timeID}]`);
     // eventButton.prop("disabled", false);
     eventButton.addClass("changed")
+}
+
+function showModal() {
+    document.getElementById("settings").showModal();
+}
+
+function closeModal(e) { 
+    e.preventDefault();
+    document.getElementById("settings").close();
+}
+
+function saveSettings(e) {
+    e.preventDefault();
+    let format = 12;
+    if ($("#24").is(":checked")) {
+        format = 24;
+    }
+    let start = parseInt($("#start").val());
+    let end = parseInt($("#end").val());
+    settings = {
+        format: format,
+        start: start,
+        end: end,
+    }
+    localStorage.setItem("settings", JSON.stringify(settings));
+    document.getElementById("settings").close();
+    createTimeBlocks();
 }
 
