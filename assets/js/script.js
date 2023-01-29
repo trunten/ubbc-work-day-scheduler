@@ -1,29 +1,27 @@
 const HOUR_START = 0;
 const HOUR_END = 23;
-const ONE_HOUR = 3600000;
-const TODAY = moment();
 const timeBlockContainer = $(".container");
 
 // event listeners
 timeBlockContainer.on("click", ".saveBtn", save);
 timeBlockContainer.on('input', "textarea", stateChange);
 $("#date-down").on("click", function() {
-    currentDateTime.subtract(1, 'days');
+    currentDate.subtract(1, 'days');
     updateDate();
 });
 $("#date-up").on("click", function() {
-    currentDateTime.add(1, 'days');
+    currentDate.add(1, 'days');
     updateDate();
 });
 
 // Initial state
 let savedEvents = JSON.parse(localStorage.getItem("scheduled")) || {};
-let currentDateTime = moment(TODAY);
+let currentDate = moment().set({hour: 0, minute: 0, second: 0});
 
 updateDate();
 
 function updateDate() {
-    $("#currentDay").text(currentDateTime.format("dddd Do MMMM YYYY"));
+    $("#currentDay").text(currentDate.format("dddd Do MMMM YYYY"));
     createTimeBlocks();
 }
 
@@ -31,7 +29,7 @@ function createTimeBlocks() {
     $(".row").remove();
     for (let i = HOUR_START; i <= HOUR_END; i++) {
         // Set hour to current loop index
-        let hour = moment(currentDateTime).set({
+        let hour = moment(currentDate).set({
             hour: i,
             minute: 0,
             second: 0,
@@ -46,28 +44,39 @@ function createTimeBlocks() {
         let textInput = $(`<textarea data-datetime="${timeID}" class="col-8 col-lg-10"></textarea>`);
         let button = $(`<button data-datetime="${timeID}" class="col-2 col-lg-1 saveBtn "><i class="fas fa-save"></i></button>`);
 
-        // Set text input colour
+        // Set text input value if it's in local storage
         if (savedEvents[timeID]) {
             textInput.val(savedEvents[timeID]);
-        }
-        if (currentDateTime < TODAY) {
-            textInput.addClass("past");
-        } else if (currentDateTime > TODAY) {
-            textInput.addClass("future");
-        } else {
-            if (i < currentDateTime.hour()) {
-                textInput.addClass("past");
-            } else if (i > currentDateTime.hour()) {
-                textInput.addClass("future");
-            } else {
-                textInput.addClass("present");
-            }
         }
 
         // Add elements to container
         timeBlock.append(hourText).append(textInput).append(textInput).append(button);
         timeBlock.appendTo(timeBlockContainer);
     }
+    // Set text input colour
+    updateBlockColours();
+}
+
+function updateBlockColours() {
+    let now = moment().set({minute: 0, second: 0}).unix();
+    $(".container textarea").each(function(i, el) {
+        let textInput = $(el);
+        let timeID = parseInt(textInput.attr("data-datetime"));
+        // Set text input colour
+        if (timeID < now) {
+            textInput.addClass("past");
+        } else if (timeID > now) {
+            textInput.addClass("future");
+        } else {
+            textInput.addClass("present");
+        }
+    })
+
+    // Run at again on the next hour to update colours as the day advances.
+    let next = moment();
+    next.set({hour: next.hour() + 1, minute: 0, second: 0});
+    next = (next.unix() - moment().unix()) * 1000; //seconds to milliseconds
+    setTimeout(updateBlockColours, next);
 }
 
 function save() {
