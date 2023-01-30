@@ -87,3 +87,7 @@ You are required to submit the following for review:
 
 ---
 © 2022 edX Boot Camps LLC. Confidential and Proprietary. All Rights Reserved.
+
+
+## Credits
+Calendar background image: [Windows](https://unsplash.com/@windows?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/photos/SwHvzwEzCfA?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText)

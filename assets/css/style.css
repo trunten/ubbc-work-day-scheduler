@@ -11,7 +11,6 @@ textarea {
   color: #000000 !important;
   border-left: 1px solid black;
   padding: 10px;
-  /* outline: none; */
 }
 
 .jumbotron {
@@ -19,7 +18,14 @@ textarea {
   background-color: transparent;
   color: black;
   border-radius: 0;
-  border-bottom: 10px solid black;
+  border-bottom: 1px solid lightgray;
+  background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.7), 
+      rgba(255, 255, 255, 0.95)),            
+      url("../images/calendar-background.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 0% 40%; 
 }
 
 .description {
