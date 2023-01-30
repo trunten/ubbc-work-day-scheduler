@@ -70,8 +70,8 @@ function updateDate() {
     createTimeBlocks();
 }
 
-// Creates all of the required time blocks based on user settings. Defaults apply if no
-// settings have been updated
+// Creates all of the required time blocks based on user settings. 
+// Defaults apply if no settings have been updated.
 function createTimeBlocks() {
     $(".row").remove();
     for (let i = settings.start; i <= settings.end; i++) {
@@ -102,7 +102,7 @@ function createTimeBlocks() {
         timeBlock.append(hourText).append(textInput).append(textInput).append(button);
         timeBlock.appendTo(timeBlockContainer);
     }
-    // Set text input colour
+    // Set text input colours
     updateBlockColours();
 }
 
@@ -243,7 +243,6 @@ function confirmUnsaved() {
         return true;
     }
 }
-
 
 // If there are unsaved changes this will alert the user if they try and quit the app to check if they intend
 // to discard any unsaved changes (or not as the case may be)
