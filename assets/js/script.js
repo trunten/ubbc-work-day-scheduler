@@ -7,8 +7,9 @@ let currentDate;
 
 init();
 
+// Set up initial app state
 function init() {
-    // event listeners
+    // Add event listeners
     timeBlockContainer.on("click", ".saveBtn", save);
     timeBlockContainer.on('input', "textarea", stateChange);
     $("#settings-btn").on("click", showModal);
@@ -58,16 +59,19 @@ function init() {
     updateDate();
 }
 
+// Function updates the date displayed in the header and calls a funciton to generate the required time blocks
 function updateDate() {
     $("#currentDay").text(currentDate.format("dddd Do MMMM YYYY"));
     if (currentDate.unix() == moment().set({hour: 0, minute: 0, second: 0}).unix()) {
-        $("#today").addClass("invisible");
+        $("#today").addClass("invisible"); // Hide the link it the selected day is today
     } else {
-        $("#today").removeClass("invisible");
+        $("#today").removeClass("invisible"); // Show the link it the selected day is not today
     }
     createTimeBlocks();
 }
 
+// Creates all of the required time blocks based on user settings. Defaults apply if no
+// settings have been updated
 function createTimeBlocks() {
     $(".row").remove();
     for (let i = settings.start; i <= settings.end; i++) {
@@ -102,6 +106,7 @@ function createTimeBlocks() {
     updateBlockColours();
 }
 
+// Processes all of the displayed timeblocks and colour codes them accordingly
 function updateBlockColours() {
     let now = moment().set({minute: 0, second: 0}).unix();
     $(".container textarea").each(function(i, el) {
@@ -118,20 +123,24 @@ function updateBlockColours() {
         }
     })
 
-    // If a timer is not set
+    // If a timer is not set I need to set one.
+    // - For automatic updating of colours if the hour changes whilst a user is on the page
     if (!timer) {
         // Run at again on the next hour to update colours as the day advances.
         let next = moment();
         next.set({hour: next.hour() + 1, minute: 0, second: 3}); // Set seconds to 3 because timer seemed to drift and run early on ocassion
         next = (next.unix() - moment().unix()) * 1000; // Time to next hour (seconds to milliseconds)
+
+        // Using setTimeout rather than interval because the first refresh will need to be sooner than 1 hour in the future.
         timer = setTimeout(function() {
-            timer = false; // Set timer to false becuase it's ran at this point
+            timer = false; // Set timer to false becuase it's ran at this point so I'll need to set a new one
             updateBlockColours();
         }, next);
     }
     
 }
 
+// Handles the click event for the save buttons and saves the corresponding time block entry to local storage
 function save() {
     let target = $(this);
     let timeID = target.attr("data-datetime");
@@ -142,22 +151,32 @@ function save() {
         delete savedEvents[timeID];
     }
     localStorage.setItem("scheduled", JSON.stringify(savedEvents));
-    if (!target.hasClass("changed")) { return; }
+    if (!target.hasClass("changed")) { return; } // Leave function early if there's nothing to save
+    
+    // Show a little animation when saving just for a bit of whimsy
     const icon = target.children();
     icon.addClass("fa-spinner fa-spin").removeClass("fa-save");
     setTimeout(function() {
         icon.addClass("fa-save").removeClass("fa-spin fa-spinner")
+        let i = $(".changed").length
         target.removeClass("changed");
         // target.prop("disabled", true);
-        showPopup();
+
+        // Bug-fix
+        // Sometimes this was showing on refresh if there were unsaved events
+        // prior to the refresh. This check ensures it will not display unexpectedly.
+        if (i > 0) { showPopup(); } 
     }, 500);
 }
 
+// Show a popup message letting the user know an event has been saved
 function showPopup(delay = 1500) {
     $('.popup').css({opacity: "1"})
     setTimeout(() => $('.popup').css({opacity: "0"}), delay);
 }
 
+// Handles the event fired when the user updates a timeblock entry
+// - Colours the save button orange to give a visual prompt that the event has not been saved
 function stateChange() {
     let timeID = $(this).attr("data-datetime");
     let eventButton = $(`.saveBtn[data-datetime=${timeID}]`);
@@ -165,15 +184,19 @@ function stateChange() {
     eventButton.addClass("changed")
 }
 
+// Shows settings modal
 function showModal() {
     document.getElementById("settings").showModal();
 }
 
+// Closes settings modal
 function closeModal(e) { 
     e.preventDefault();
     document.getElementById("settings").close();
 }
 
+
+// Saves user settings in local storage
 function saveSettings(e) {
     e.preventDefault();
     let format = 12;
@@ -192,6 +215,8 @@ function saveSettings(e) {
     createTimeBlocks();
 }
 
+// Clears the entire schedule for the currently selected day.
+// - Prompts the user for confimration before proceeding
 function clearSchedule(e) {
     e.preventDefault();
     if (confirm("Are you sure you want to clear this day's schedule?\nThis action cannot be undone.")) {
@@ -209,6 +234,8 @@ function clearSchedule(e) {
     }
 }
 
+// If there are unsaved changes this will request confirmation from the user
+// that they do which to discard any unsaved changes (or not)
 function confirmUnsaved() {
     if ($(".changed").length) {
         return confirm("Changes have not been saved.\n\nAre you sure you want to change the date?");
@@ -217,6 +244,9 @@ function confirmUnsaved() {
     }
 }
 
+
+// If there are unsaved changes this will alert the user if they try and quit the app to check if they intend
+// to discard any unsaved changes (or not as the case may be)
 window.onbeforeunload = function () {
     if ($(".changed").length) {
         return "Unsaved changes.";
