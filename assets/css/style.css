@@ -4,6 +4,15 @@ body {
   line-height: 1;
 }
 
+noscript {
+  display: block; 
+  margin: 10px 0 -60px; 
+  text-align: center; 
+  color: red; 
+  font-weight: bold; 
+  line-height: 1.5;
+}
+
 textarea {
   background: transparent;
   border: none;
@@ -193,7 +202,18 @@ input[type="radio"] {
     font-size: 2em !important;
     font-weight: bold !important;
   }
+
   p {
     font-size: 1em !important;
+  }
+
+  #settings-btn {
+    scale: 0.7;
+  }
+
+  @media (hover:hover) {
+    #settings-btn:hover {
+      scale: 0.9;
+    }
   }
 }
