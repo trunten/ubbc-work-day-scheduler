@@ -221,6 +221,7 @@ input[type="radio"] {
 
   #settings-btn {
     scale: 0.7;
+    transform: translateY(-11px);
   }
 
   .jumbotron .muted-text {
@@ -230,6 +231,7 @@ input[type="radio"] {
   @media (hover:hover) {
     #settings-btn:hover {
       scale: 0.9;
+      transform: translateY(-5px);
     }
   }
 }
