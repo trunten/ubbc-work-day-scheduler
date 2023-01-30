@@ -150,7 +150,7 @@ function save() {
         target.removeClass("changed");
         // target.prop("disabled", true);
         showPopup();
-    }, 800);
+    }, 500);
 }
 
 function showPopup(delay = 1500) {
