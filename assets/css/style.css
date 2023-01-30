@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald&display=swap');
+
 body {
   font-family: 'Open Sans', sans-serif;
   font-size: 16px;
@@ -22,6 +24,10 @@ textarea {
   padding: 10px;
 }
 
+h1 {
+  font-family: 'Oswald', sans-serif;
+}
+
 .jumbotron {
   text-align: center;
   background-color: transparent;
@@ -35,6 +41,11 @@ textarea {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 0% 40%; 
+}
+
+.jumbotron .muted-text {
+  margin-block: 20px;
+  color: rgb(80, 80, 80);
 }
 
 .description {
@@ -209,6 +220,10 @@ input[type="radio"] {
 
   #settings-btn {
     scale: 0.7;
+  }
+
+  .jumbotron .muted-text {
+    font-size: 0.8em !important;
   }
 
   @media (hover:hover) {
