@@ -14,18 +14,25 @@ function init() {
     $("#settings-btn").on("click", showModal);
     $("#close-modal").on("click", closeModal);
     $("#save-settings").on("click", saveSettings);
+    $("#clear-schedule").on("click", clearSchedule);
     $("#date-down").on("click", function() {
-        currentDate.subtract(1, 'days');
-        updateDate();
+        if (confirmUnsaved()) {
+            currentDate.subtract(1, 'days');
+            updateDate();
+        }
     });
     $("#date-up").on("click", function() {
-        currentDate.add(1, 'days');
-        updateDate();
+        if (confirmUnsaved()) {
+            currentDate.add(1, 'days');
+            updateDate();
+        }
     });
     $("#today").on("click", function(e) {
         e.preventDefault();
-        currentDate = moment().set({hour: 0, minute: 0, second: 0});
-        updateDate();
+        if (confirmUnsaved()) {
+            currentDate = moment().set({hour: 0, minute: 0, second: 0});
+            updateDate();
+        }
     })
 
     // Get settings from local storage and set form values
@@ -183,5 +190,21 @@ function saveSettings(e) {
     localStorage.setItem("settings", JSON.stringify(settings));
     document.getElementById("settings").close();
     createTimeBlocks();
+}
+
+
+
+function confirmUnsaved() {
+    if ($(".changed").length) {
+        return confirm("Changes have not been saved.\n\nAre you sure you want to change the date?");
+    } else {
+        return true;
+    }
+}
+
+window.onbeforeunload = function () {
+    if ($(".changed").length) {
+        return "Unsaved changes.";
+    }
 }
 
