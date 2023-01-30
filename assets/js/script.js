@@ -192,7 +192,22 @@ function saveSettings(e) {
     createTimeBlocks();
 }
 
-
+function clearSchedule(e) {
+    e.preventDefault();
+    if (confirm("Are you sure you want to clear this day's schedule?\nThis action cannot be undone.")) {
+        for (let i = 0; i < 24; i++) {
+            let timeID = moment(currentDate).set({
+                hour: i,
+                minute: 0,
+                second: 0,
+            }).unix();
+            delete savedEvents[timeID];
+        }
+        $(".container textarea").val("");
+        $(".saveBtn").removeClass("changed");
+        localStorage.setItem("scheduled", JSON.stringify(savedEvents));
+    }
+}
 
 function confirmUnsaved() {
     if ($(".changed").length) {
