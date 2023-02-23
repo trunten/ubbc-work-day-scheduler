@@ -4,6 +4,7 @@ let settings;
 let timer;
 let savedEvents;
 let currentDate;
+let weather = {};
 
 init();
 
@@ -60,6 +61,9 @@ function init() {
 
     // Set the date text and create timeblocks
     updateDate();
+
+    // Get the weather from IP
+    getIPLocation();
 }
 
 // Function updates the date displayed in the header and calls a funciton to generate the required time blocks
@@ -71,6 +75,7 @@ function updateDate() {
         $("#today").removeClass("invisible"); // Show the link it the selected day is not today
     }
     createTimeBlocks();
+    displayWeather(currentDate.format("YYYY-MM-DD"));
 }
 
 // Creates all of the required time blocks based on user settings. 
@@ -277,6 +282,43 @@ function confirmUnsaved(callback) {
     }
 }
 
+// Gets lat/lng from user IP address
+function getIPLocation() {
+    fetch("https://api.bigdatacloud.net/data/reverse-geocode-client").then(r => r.json()).then(data => {
+        getWeather({ name: data.city, lat: data.latitude, lng: data.longitude });
+    });
+  }
+
+// Gets weather from lat/lng
+function getWeather(location) {
+    const key ="2ZQRSVF6JFPA239FUT6U6WBL5";
+    const { lat, lng } = location
+    fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${lat},${lng}?unitGroup=metric&key=${key}&contentType=json`)
+    .then(r => r.json())
+    .then(data => {
+        // console.log(data)
+        const today = data.days[0].datetime;
+        const { temp, icon } = data.currentConditions;
+        weather[today] = [temp, icon];
+        for (let i = 1; i < data.days.length; i++) {
+            let { datetime, icon, temp } = data.days[i];
+            weather[datetime] = [temp, icon];
+        }
+        displayWeather(today);
+    });
+}
+
+function displayWeather(datetime) {
+    if (weather[datetime]) {
+        [temp, icon] = weather[datetime];
+        const iconURL = `https://raw.githubusercontent.com/visualcrossing/WeatherIcons/main/SVG/1st%20Set%20-%20Color/${icon}.svg`
+        $("#weather").html(`<span>${temp}°C</span><img src="${iconURL}" height="25" class="ml-2">`);
+    } else {
+        $("#weather").html("&nbsp;");
+    }
+    
+} 
+
 // If there are unsaved changes this will alert the user if they try and quit the app to check if they intend
 // to discard any unsaved changes (or not as the case may be)
 window.onbeforeunload = function () {
@@ -284,4 +326,3 @@ window.onbeforeunload = function () {
         return "Unsaved changes.";
     }
 }
-
