@@ -296,7 +296,6 @@ function confirmUnsaved(callback) {
     if (!callback) { return };
     if ($(".changed").length) {
         showAlert("Changes have not been saved.\n\nAre you sure you want to change the date?", true, callback);
-        // return confirm("Changes have not been saved.\n\nAre you sure you want to change the date?");
     } else {
         callback();
     }
@@ -318,7 +317,6 @@ function getWeather(location) {
     fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${lat},${lng}?unitGroup=metric&key=${key}&contentType=json`)
     .then(r => r.json())
     .then(data => {
-        // console.log(data)
         const today = data.days[0].datetime;
         const { temp, icon } = data.currentConditions;
         weather[today] = [temp, icon];
