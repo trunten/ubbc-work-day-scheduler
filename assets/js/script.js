@@ -12,29 +12,31 @@ function init() {
     // Add event listeners
     timeBlockContainer.on("click", ".saveBtn", save);
     timeBlockContainer.on('input', "textarea", stateChange);
+    $("#cancelBtn").on("click", closeAlert);
+    $("#okBtn").on("click", closeAlert);
     $("#settings-btn").on("click", showModal);
     $("#close-modal").on("click", closeModal);
     $("#save-settings").on("click", saveSettings);
     $("#save-all").on("click", saveAll);
     $("#clear-schedule").on("click", clearSchedule);
     $("#date-down").on("click", function() {
-        if (confirmUnsaved()) {
+        confirmUnsaved(() => {
             currentDate.subtract(1, 'days');
             updateDate();
-        }
+        });
     });
     $("#date-up").on("click", function() {
-        if (confirmUnsaved()) {
+        confirmUnsaved(() => {
             currentDate.add(1, 'days');
             updateDate();
-        }
+        });
     });
     $("#today").on("click", function(e) {
         e.preventDefault();
-        if (confirmUnsaved()) {
+        confirmUnsaved(() => {
             currentDate = moment().set({hour: 0, minute: 0, second: 0});
             updateDate();
-        }
+        });
     })
 
     // Get settings from local storage and set form values
@@ -227,7 +229,7 @@ function saveSettings(e) {
 // - Prompts the user for confimration before proceeding
 function clearSchedule(e) {
     e.preventDefault();
-    if (confirm("Are you sure you want to clear this day's schedule?\nThis action cannot be undone.")) {
+    showAlert("Are you sure you want to clear this day's schedule?\n\nThis action cannot be undone.",true, () => {
         for (let i = 0; i < 24; i++) {
             let timeID = moment(currentDate).set({
                 hour: i,
@@ -239,16 +241,39 @@ function clearSchedule(e) {
         $(".container textarea").val("");
         $(".saveBtn").removeClass("changed");
         localStorage.setItem("scheduled", JSON.stringify(savedEvents));
+    });
+}
+
+// Shows a modal alert with the supplied string as text.
+function showAlert(message, showCancelBtn, callback) {
+    if (!message || !message.trim()) { message = "Alert!" }
+    if (showCancelBtn) {
+        $("#cancelBtn").removeClass("d-none");
+    } else {
+        $("#cancelBtn").addClass("d-none");
     }
+    $("#alertMessage").text(message);
+    $('#okBtn').off();
+    $('#okBtn').on("click", function() {
+        closeAlert();
+        if (callback) callback();
+    });
+    $("#alert")[0].showModal();
+}
+
+function closeAlert() {
+    $("#alert")[0].close()
 }
 
 // If there are unsaved changes this will request confirmation from the user
 // that they do which to discard any unsaved changes (or not)
-function confirmUnsaved() {
+function confirmUnsaved(callback) {
+    if (!callback) { return };
     if ($(".changed").length) {
-        return confirm("Changes have not been saved.\n\nAre you sure you want to change the date?");
+        showAlert("Changes have not been saved.\n\nAre you sure you want to change the date?", true, callback);
+        // return confirm("Changes have not been saved.\n\nAre you sure you want to change the date?");
     } else {
-        return true;
+        callback();
     }
 }
 

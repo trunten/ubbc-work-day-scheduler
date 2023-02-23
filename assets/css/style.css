@@ -205,6 +205,54 @@ input[type="radio"] {
   font-size : clamp(12px, 2vw, 16px);
 }
 
+/* Alert / Confirm */
+#alert * {
+  margin: 0;
+  padding: 0;
+}
+
+#alert {
+  background-color: whitesmoke;
+  padding: 1.8rem;
+  border: 1px solid rgb(170, 170, 170);
+  box-shadow: 0 0 5px rgba(128, 128, 128, 0.8);
+  width: 95%;
+  max-width: 320px;
+  color: black;
+}
+
+#alert > div {
+  display: grid;
+  place-items: center;
+  gap: 1.5rem;
+}
+
+#alert svg { 
+  fill: red;
+  height: 3rem;
+  width: 3rem;
+}
+
+#alertMessage::first-letter {
+  text-transform: uppercase;
+}
+
+#alertMessage {
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+#alert .btns {
+  display: grid;
+  place-items: center;
+  gap: 1rem;
+  grid-auto-flow: column;
+}
+
+#alert .btns button {
+  width: 100px !important;
+}
+
 @media screen and (max-width:414px) {
   h1 {
     font-size: 2em !important;
