@@ -15,6 +15,7 @@ function init() {
     $("#settings-btn").on("click", showModal);
     $("#close-modal").on("click", closeModal);
     $("#save-settings").on("click", saveSettings);
+    $("#save-all").on("click", saveAll);
     $("#clear-schedule").on("click", clearSchedule);
     $("#date-down").on("click", function() {
         if (confirmUnsaved()) {
@@ -73,24 +74,25 @@ function updateDate() {
 // Creates all of the required time blocks based on user settings. 
 // Defaults apply if no settings have been updated.
 function createTimeBlocks() {
-    $(".row").remove();
+    $(".time-block").remove();
     for (let i = settings.start; i <= settings.end; i++) {
         // Set hour to current loop index
-        let hour = moment(currentDate).set({
+        const hour = moment(currentDate).set({
             hour: i,
             minute: 0,
             second: 0,
         });
 
         // Unique dataset value for buttons and textareas
-        let timeID = hour.unix();
+        const unix = hour.unix();
+        const timeID = hour.format("YYYY-MM-DD[T]HH:mm");
 
         // Create elements
-        let label = settings.format === 12 ? hour.format("hA") : hour.format("HH:mm");
-        let timeBlock  = $(`<div class="time-block row"></div>`);
-        let hourText = $(`<div class="col-2 col-lg-1 hour"><h3 class="align-middle text-right pt-3">${label}</h3></div>`);
-        let textInput = $(`<textarea data-datetime="${timeID}" class="col-8 col-lg-10"></textarea>`);
-        let button = $(`<button data-datetime="${timeID}" class="col-2 col-lg-1 saveBtn"><i class="fas fa-save"></i></button>`);
+        const label = settings.format === 12 ? hour.format("hA") : hour.format("HH:mm");
+        const timeBlock  = $(`<div class="time-block row"></div>`);
+        const hourText = $(`<div class="col-2 col-lg-1 hour"><h3 class="align-middle text-right pt-3">${label}</h3></div>`);
+        const textInput = $(`<textarea data-datetime="${timeID}" data-unix="${unix}" class="col-8 col-lg-10"></textarea>`);
+        const button = $(`<button data-datetime="${timeID}" data-unix="${unix}" class="col-2 col-lg-1 saveBtn"><i class="fas fa-save"></i></button>`);
         // button.prop("disabled", true);
 
         // Set text input value if it's in local storage
@@ -108,10 +110,11 @@ function createTimeBlocks() {
 
 // Processes all of the displayed timeblocks and colour codes them accordingly
 function updateBlockColours() {
-    let now = moment().set({minute: 0, second: 0}).unix();
+    const now = moment().set({minute: 0, second: 0}).unix();
     $(".container textarea").each(function(i, el) {
-        let textInput = $(el);
-        let timeID = parseInt(textInput.attr("data-datetime"));
+        const textInput = $(el);
+        // const timeID = parseInt(textInput.attr("data-datetime"));
+        const timeID = parseInt(textInput.attr("data-unix"));
         // Set text input colour
         textInput.removeClass("past present future")
         if (timeID < now) {
@@ -142,16 +145,16 @@ function updateBlockColours() {
 
 // Handles the click event for the save buttons and saves the corresponding time block entry to local storage
 function save() {
-    let target = $(this);
-    let timeID = target.attr("data-datetime");
-    let eventText = $(`textarea[data-datetime=${timeID}]`).val().trim();
+    const target = $(this);
+    if (!target.hasClass("changed")) { return; } // Leave function early if there's nothing to save
+    const timeID = target.attr("data-datetime");
+    const eventText = $(`textarea[data-datetime="${timeID}"]`).val().trim();
     if (eventText) {
         savedEvents[timeID] = eventText;
     } else {
         delete savedEvents[timeID];
     }
     localStorage.setItem("scheduled", JSON.stringify(savedEvents));
-    if (!target.hasClass("changed")) { return; } // Leave function early if there's nothing to save
     
     // Show a little animation when saving just for a bit of whimsy
     const icon = target.children();
@@ -169,6 +172,12 @@ function save() {
     }, 500);
 }
 
+// Saves all unsaved events for the day
+function saveAll(e) {
+    e.preventDefault();
+    $(".saveBtn").each((i, btn) => btn.click());
+}
+
 // Show a popup message letting the user know an event has been saved
 function showPopup(delay = 1500) {
     $('.popup').css({opacity: "1"})
@@ -178,8 +187,8 @@ function showPopup(delay = 1500) {
 // Handles the event fired when the user updates a timeblock entry
 // - Colours the save button orange to give a visual prompt that the event has not been saved
 function stateChange() {
-    let timeID = $(this).attr("data-datetime");
-    let eventButton = $(`.saveBtn[data-datetime=${timeID}]`);
+    const timeID = $(this).attr("data-datetime");
+    const eventButton = $(`.saveBtn[data-datetime="${timeID}"]`);
     // eventButton.prop("disabled", false);
     eventButton.addClass("changed")
 }
@@ -225,7 +234,7 @@ function clearSchedule(e) {
                 hour: i,
                 minute: 0,
                 second: 0,
-            }).unix();
+            }).format("YYYY-MM-DD[T]HH:mm") //.unix();
             delete savedEvents[timeID];
         }
         $(".container textarea").val("");

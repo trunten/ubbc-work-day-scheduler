@@ -55,9 +55,6 @@ h1 {
 .time-block {
   text-align: center;
   border-radius: 15px;
-}
-
-.row {
   height: 80px !important;
   border-top: 1px solid white;
 }
@@ -204,7 +201,7 @@ input[type="radio"] {
   transform: translateY(-3px);
 }
 
-#clear-schedule {
+#clear-schedule, #save-all {
   font-size : clamp(12px, 2vw, 16px);
 }
 
