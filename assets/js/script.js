@@ -311,9 +311,13 @@ function getWeather(location) {
 function displayWeather(datetime) {
     if (weather[datetime]) {
         [temp, icon] = weather[datetime];
-        $("#weather").html(`<span>${temp}°C</span><img src="./assets/images/weather-icons/${icon}.svg" height="25" class="ml-2">`);
+        $("#weather span").text(`${temp}°C`);
+        $("#weather img").attr("src",`./assets/images/weather-icons/${icon}.svg`);
+        $("#weather").removeClass("invisible");
     } else {
-        $("#weather").html("&nbsp;");
+        $("#weather span").text("");
+        $("#weather img").attr("src","");
+        $("#weather").addClass("invisible");
     }
     
 } 
