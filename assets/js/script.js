@@ -71,8 +71,12 @@ function init() {
     // Set the date text and create timeblocks
     updateDate();
 
-    // Get the weather from IP
-    getIPLocation();
+    // Get the weather
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(location => getLocation(location.coords), getLocation);
+    } else {
+        getLocation();
+    }
 }
 
 // Function updates the date displayed in the header and calls a funciton to generate the required time blocks
@@ -291,9 +295,11 @@ function confirmUnsaved(callback) {
     }
 }
 
-// Gets lat/lng from user IP address
-function getIPLocation() {
-    fetch("https://api.bigdatacloud.net/data/reverse-geocode-client").then(r => r.json()).then(data => {
+// Reverse geocoding from user IP address or location coords if supplied
+function getLocation(location) {
+    let url = "https://api.bigdatacloud.net/data/reverse-geocode-client";
+    if (location.latitude) { url += `?latitude=${location.latitude}&longitude=${location.longitude}` }
+    fetch(url).then(r => r.json()).then(data => {
         getWeather({ name: data.city, lat: data.latitude, lng: data.longitude });
     });
   }
@@ -301,7 +307,7 @@ function getIPLocation() {
 // Gets weather from lat/lng
 function getWeather(location) {
     const key ="2ZQRSVF6JFPA239FUT6U6WBL5";
-    const { lat, lng } = location
+    const { lat, lng } = location;
     fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${lat},${lng}?unitGroup=metric&key=${key}&contentType=json`)
     .then(r => r.json())
     .then(data => {
