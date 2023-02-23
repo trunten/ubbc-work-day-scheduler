@@ -48,6 +48,10 @@ h1 {
   color: rgb(80, 80, 80);
 }
 
+#weather > * {
+  cursor: pointer;
+}
+
 .description {
   white-space: pre-wrap;
 }

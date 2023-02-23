@@ -4,12 +4,15 @@ let settings;
 let timer;
 let savedEvents;
 let currentDate;
-let weather = {};
+let weather;
+let units;
 
 init();
 
 // Set up initial app state
 function init() {
+    weather = {};
+    units = localStorage.getItem("units") || "C";
     // Add event listeners
     timeBlockContainer.on("click", ".saveBtn", save);
     timeBlockContainer.on('input', "textarea", stateChange);
@@ -39,6 +42,12 @@ function init() {
             updateDate();
         });
     })
+    $("#weather").on("click", () => {
+        units = (units === "F") ? "C" : "F";
+        localStorage.setItem("units", units);
+        const celcius = $("#weather span").attr("data-deg");
+        $("#weather span").text(tempText(celcius));
+    });
 
     // Get settings from local storage and set form values
     settings = JSON.parse(localStorage.getItem("settings")) || { format: 12, start: 9, end: 17 };
@@ -311,16 +320,30 @@ function getWeather(location) {
 function displayWeather(datetime) {
     if (weather[datetime]) {
         [temp, icon] = weather[datetime];
-        $("#weather span").text(`${temp}°C`);
+        $("#weather span").text(tempText(temp));
+        $("#weather span").attr("data-deg", temp);
         $("#weather img").attr("src",`./assets/images/weather-icons/${icon}.svg`);
         $("#weather").removeClass("invisible");
     } else {
         $("#weather span").text("");
+        $("#weather span").attr("data-deg", "");
         $("#weather img").attr("src","");
         $("#weather").addClass("invisible");
     }
-    
-} 
+}
+
+function tempText(celcius) {
+    celcius = parseFloat(celcius);
+    if (!celcius) {
+        return "";
+    } else {
+        if (units === "F") {
+            return (celcius * (9/5) + 32).toFixed(1) + "°F";
+        } else {
+            return celcius.toFixed(1) + "°C";
+        }
+    }
+}
 
 // If there are unsaved changes this will alert the user if they try and quit the app to check if they intend
 // to discard any unsaved changes (or not as the case may be)
