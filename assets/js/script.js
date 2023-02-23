@@ -311,8 +311,7 @@ function getWeather(location) {
 function displayWeather(datetime) {
     if (weather[datetime]) {
         [temp, icon] = weather[datetime];
-        const iconURL = `https://raw.githubusercontent.com/visualcrossing/WeatherIcons/main/SVG/1st%20Set%20-%20Color/${icon}.svg`
-        $("#weather").html(`<span>${temp}°C</span><img src="${iconURL}" height="25" class="ml-2">`);
+        $("#weather").html(`<span>${temp}°C</span><img src="./assets/images/weather-icons/${icon}.svg" height="25" class="ml-2">`);
     } else {
         $("#weather").html("&nbsp;");
     }
