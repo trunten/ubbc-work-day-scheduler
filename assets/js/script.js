@@ -113,7 +113,6 @@ function updateBlockColours() {
     const now = moment().set({minute: 0, second: 0}).unix();
     $(".container textarea").each(function(i, el) {
         const textInput = $(el);
-        // const timeID = parseInt(textInput.attr("data-datetime"));
         const timeID = parseInt(textInput.attr("data-unix"));
         // Set text input colour
         textInput.removeClass("past present future")
@@ -234,7 +233,7 @@ function clearSchedule(e) {
                 hour: i,
                 minute: 0,
                 second: 0,
-            }).format("YYYY-MM-DD[T]HH:mm") //.unix();
+            }).format("YYYY-MM-DD[T]HH:mm");
             delete savedEvents[timeID];
         }
         $(".container textarea").val("");
