@@ -73,9 +73,12 @@ function init() {
 
     // Get the weather
     if (navigator.geolocation) {
-        navigator.permissions.query({ name: 'geolocation' }).then(result => {
-            if (result.state === 'granted') { 
+        navigator.permissions.query({ name: "geolocation" }).then(result => {
+            console.log(result);
+            if (result.state === "granted") { 
                 navigator.geolocation.getCurrentPosition(location => getLocation(location.coords), getLocation);
+            } else if (result.state === "denied") {
+                getLocation();
             } else {
                 showAlert("This site needs your location to get accurate weather forecasts", true, function() {
                     navigator.geolocation.getCurrentPosition(location => getLocation(location.coords), getLocation);
