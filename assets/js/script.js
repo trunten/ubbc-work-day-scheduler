@@ -73,7 +73,9 @@ function init() {
 
     // Get the weather
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(location => getLocation(location.coords), getLocation);
+        showAlert("This site needs your location to get accurate weather forecasts", true, function() {
+            navigator.geolocation.getCurrentPosition(location => getLocation(location.coords), getLocation);
+        }, getLocation);
     } else {
         getLocation();
     }
@@ -263,7 +265,7 @@ function clearSchedule(e) {
 }
 
 // Shows a modal alert with the supplied string as text.
-function showAlert(message, showCancelBtn, callback) {
+function showAlert(message, showCancelBtn, okCallback, cancelCallback) {
     if (!message || !message.trim()) { message = "Alert!" }
     if (showCancelBtn) {
         $("#cancelBtn").removeClass("d-none");
@@ -274,7 +276,12 @@ function showAlert(message, showCancelBtn, callback) {
     $('#okBtn').off();
     $('#okBtn').on("click", function() {
         closeAlert();
-        if (callback) callback();
+        if (okCallback) okCallback();
+    });
+    $('#cancelBtn').off();
+    $('#cancelBtn').on("click", function() {
+        closeAlert();
+        if (cancelCallback) cancelCallback();
     });
     $("#alert")[0].showModal();
 }
@@ -298,7 +305,7 @@ function confirmUnsaved(callback) {
 // Reverse geocoding from user IP address or location coords if supplied
 function getLocation(location) {
     let url = "https://api.bigdatacloud.net/data/reverse-geocode-client";
-    if (location.latitude) { url += `?latitude=${location.latitude}&longitude=${location.longitude}` }
+    if (location?.latitude) { url += `?latitude=${location.latitude}&longitude=${location.longitude}` }
     fetch(url).then(r => r.json()).then(data => {
         getWeather({ name: data.city, lat: data.latitude, lng: data.longitude });
     });
