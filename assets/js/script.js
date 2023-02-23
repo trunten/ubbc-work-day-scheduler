@@ -73,9 +73,15 @@ function init() {
 
     // Get the weather
     if (navigator.geolocation) {
-        showAlert("This site needs your location to get accurate weather forecasts", true, function() {
-            navigator.geolocation.getCurrentPosition(location => getLocation(location.coords), getLocation);
-        }, getLocation);
+        navigator.permissions.query({ name: 'geolocation' }).then(result => {
+            if (result.state === 'granted') { 
+                navigator.geolocation.getCurrentPosition(location => getLocation(location.coords), getLocation);
+            } else {
+                showAlert("This site needs your location to get accurate weather forecasts", true, function() {
+                    navigator.geolocation.getCurrentPosition(location => getLocation(location.coords), getLocation);
+                }, getLocation);
+            }
+        }); 
     } else {
         getLocation();
     }
@@ -304,7 +310,14 @@ function confirmUnsaved(callback) {
 // Reverse geocoding from user IP address or location coords if supplied
 function getLocation(location) {
     let url = "https://api.bigdatacloud.net/data/reverse-geocode-client";
-    if (location?.latitude) { url += `?latitude=${location.latitude}&longitude=${location.longitude}` }
+    if (location?.latitude) { 
+        url += `?latitude=${location.latitude}&longitude=${location.longitude}`
+        // If I decide to display the name in the future then I'll have to use the above url
+        // in the fetch below. For the time being though skipping this step and going straight
+        // to the weather api for speed. Comment out the following 2 lines if this changes.
+        getWeather({lat: location.latitude, lng: location.longitude});
+        return;
+    }
     fetch(url).then(r => r.json()).then(data => {
         getWeather({ name: data.city, lat: data.latitude, lng: data.longitude });
     });
