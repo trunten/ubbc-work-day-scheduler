@@ -74,7 +74,6 @@ function init() {
     // Get the weather
     if (navigator.geolocation) {
         navigator.permissions.query({ name: "geolocation" }).then(result => {
-            console.log(result);
             if (result.state === "granted") { 
                 navigator.geolocation.getCurrentPosition(location => getLocation(location.coords), getLocation);
             } else if (result.state === "denied") {
