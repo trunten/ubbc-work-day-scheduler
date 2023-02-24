@@ -56,6 +56,8 @@ Application Screenshot:
 - Calendar favicon: https://icons8.com/
 
 ## License
+[![license](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
 Please refer to the [LICENSE (MIT)](LICENSE) in the repo.
 
 
